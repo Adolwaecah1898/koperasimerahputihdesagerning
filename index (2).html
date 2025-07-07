@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aplikasi Koperasi Desa Merah Putih Desa Gerning</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+  <!-- Login Form -->
+  <div id="loginPage" class="min-h-screen flex items-center justify-center">
+    <form onsubmit="event.preventDefault(); login();" class="bg-white p-6 rounded shadow-md w-full max-w-sm">
+      <h2 class="text-xl font-bold mb-4 text-center">Login Koperasi</h2>
+      <input type="text" id="username" placeholder="Username" class="w-full mb-3 p-2 border rounded" required>
+      <input type="password" id="password" placeholder="Password" class="w-full mb-3 p-2 border rounded" required>
+      <select id="role" class="w-full mb-4 p-2 border rounded" required>
+        <option value="">Pilih Role</option>
+        <option value="admin">Admin</option>
+        <option value="bendahara">Bendahara</option>
+        <option value="anggota">Anggota</option>
+      </select>
+      <button class="bg-red-600 text-white w-full py-2 rounded">Login</button>
+    </form>
+  </div>
+
+  <!-- Main App -->
+  <div id="mainApp" style="display:none">
+    <!-- Navbar -->
+    <nav class="bg-red-600 text-white p-4 flex justify-between">
+      <div class="text-xl font-bold">Koperasi Merah Putih</div>
+      <div>
+        <a href="#" class="mx-2 menu dashboard">Dashboard</a>
+        <a href="#" class="mx-2 menu anggota">Anggota</a>
+        <a href="#" class="mx-2 menu simpanan">Simpanan</a>
+        <a href="#" class="mx-2 menu pinjaman">Pinjaman</a>
+        <a href="#" class="mx-2 menu unit">Unit Usaha</a>
+        <a href="#" class="mx-2 menu transaksi">Transaksi</a>
+        <a href="#" class="mx-2 menu laporan">Laporan</a>
+        <a href="#" onclick="logout()" class="mx-2">Logout</a>
+      </div>
+    </nav>
+
+    <!-- Konten -->
+    <section class="p-6">
+      <h2 class="text-xl font-semibold">Selamat datang di Aplikasi Koperasi!</h2>
+      <p id="welcomeText" class="mt-2 text-gray-700"></p>
+    </section>
+
+    <!-- Dashboard Grafik & Ringkasan -->
+    <section class="p-6">
+      <h2 class="text-2xl font-semibold mb-4">Grafik Keuangan & Laporan</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+        <div class="bg-white p-4 rounded shadow">
+          <h3 class="text-lg font-bold">Total Simpanan</h3>
+          <p id="totalSimpanan" class="text-xl text-green-600 font-bold">Rp 0</p>
+        </div>
+        <div class="bg-white p-4 rounded shadow">
+          <h3 class="text-lg font-bold">Total Pinjaman</h3>
+          <p id="totalPinjaman" class="text-xl text-red-600 font-bold">Rp 0</p>
+        </div>
+        <div class="bg-white p-4 rounded shadow">
+          <h3 class="text-lg font-bold">Saldo Koperasi</h3>
+          <p id="saldoKoperasi" class="text-xl text-blue-600 font-bold">Rp 0</p>
+        </div>
+      </div>
+      <div class="bg-white p-4 rounded shadow">
+        <canvas id="grafikDashboard" class="w-full h-64"></canvas>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    function login() {
+      const username = document.getElementById('username').value;
+      const role = document.getElementById('role').value;
+      if (!username || !role) {
+        alert('Isi semua field!');
+        return;
+      }
+      localStorage.setItem('user', JSON.stringify({ username, role }));
+      showApp();
+    }
+
+    function logout() {
+      localStorage.removeItem('user');
+      location.reload();
+    }
+
+    function showApp() {
+      const user = JSON.parse(localStorage.getItem('user'));
+      if (!user) return;
+      document.getElementById('loginPage').style.display = 'none';
+      document.getElementById('mainApp').style.display = 'block';
+      document.getElementById('welcomeText').textContent = `Anda login sebagai ${user.username} (${user.role})`;
+
+      const role = user.role;
+      const menuMap = {
+        admin: ["dashboard", "anggota", "simpanan", "pinjaman", "unit", "transaksi", "laporan"],
+        bendahara: ["dashboard", "anggota", "simpanan", "pinjaman", "unit", "transaksi", "laporan"],
+        anggota: ["dashboard", "simpanan", "pinjaman"]
+      };
+
+      document.querySelectorAll('.menu').forEach(menu => {
+        const menuClass = Array.from(menu.classList).find(c => c !== 'menu');
+        if (!menuMap[role].includes(menuClass)) {
+          menu.style.display = 'none';
+        }
+      });
+
+      loadDashboard();
+    }
+
+    function loadDashboard() {
+      const simpanan = [10000000, 15000000, 18000000, 22000000, 25000000];
+      const pinjaman = [5000000, 7000000, 6500000, 8000000, 8500000];
+
+      const totalSimpanan = simpanan.reduce((a, b) => a + b, 0);
+      const totalPinjaman = pinjaman.reduce((a, b) => a + b, 0);
+      const saldo = totalSimpanan - totalPinjaman;
+
+      document.getElementById('totalSimpanan').textContent = `Rp ${totalSimpanan.toLocaleString()}`;
+      document.getElementById('totalPinjaman').textContent = `Rp ${totalPinjaman.toLocaleString()}`;
+      document.getElementById('saldoKoperasi').textContent = `Rp ${saldo.toLocaleString()}`;
+
+      const ctx = document.getElementById('grafikDashboard').getContext('2d');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei'],
+          datasets: [
+            {
+              label: 'Simpanan',
+              data: simpanan,
+              backgroundColor: 'rgba(34, 197, 94, 0.7)'
+            },
+            {
+              label: 'Pinjaman',
+              data: pinjaman,
+              backgroundColor: 'rgba(239, 68, 68, 0.7)'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { position: 'top' },
+            title: { display: true, text: 'Statistik Keuangan Bulanan' }
+          }
+        }
+      });
+    }
+
+    window.onload = showApp;
+  </script>
+
+</body>
+</html>
