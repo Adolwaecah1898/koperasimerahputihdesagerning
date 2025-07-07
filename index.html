@@ -1,153 +1,42 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aplikasi Koperasi Desa Merah Putih Desa Gerning</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login Koperasi Merah Putih</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
 </head>
-<body class="bg-gray-100 text-gray-800">
-
-  <!-- Navbar -->
-  <nav class="bg-red-600 text-white p-4 flex justify-between">
-    <div class="text-xl font-bold">Koperasi Merah Putih</div>
-    <div>
-      <a href="#" class="mx-2">Dashboard</a>
-      <a href="#" class="mx-2">Anggota</a>
-      <a href="#" class="mx-2">Simpanan</a>
-      <a href="#" class="mx-2">Pinjaman</a>
-      <a href="#" class="mx-2">Unit Usaha</a>
-      <a href="#" class="mx-2">Transaksi</a>
-      <a href="#" class="mx-2">Laporan</a>
-      <a href="#" class="mx-2">Login</a>
-    </div>
-  </nav>
-
-  <!-- Grafik Keuangan -->
-  <section class="p-6">
-    <h2 class="text-2xl font-semibold mb-4">Grafik Simpanan & Pinjaman</h2>
-    <div class="bg-white p-4 rounded shadow-md">
-      <canvas id="grafikKeuangan" class="w-full h-64"></canvas>
-    </div>
-  </section>
-
-  <!-- Cetak Invoice -->
-  <section class="p-6">
-    <h2 class="text-2xl font-semibold mb-4">Cetak Invoice</h2>
-    <div class="bg-white p-4 rounded shadow-md">
-      <input type="text" id="invoiceNama" placeholder="Nama Anggota" class="p-2 border rounded w-full mb-2">
-      <input type="text" id="invoiceJumlah" placeholder="Jumlah Transaksi" class="p-2 border rounded w-full mb-2">
-      <button onclick="cetakInvoice()" class="bg-red-600 text-white px-4 py-2 rounded">Cetak PDF</button>
-    </div>
-  </section>
-
-  <!-- Tambah/Edit Anggota -->
-  <section class="p-6">
-    <h2 class="text-2xl font-semibold mb-4">Manajemen Anggota</h2>
-    <form class="bg-white p-4 rounded shadow-md grid grid-cols-1 md:grid-cols-2 gap-4">
-      <input type="text" placeholder="Nama Lengkap" class="p-2 border rounded">
-      <input type="text" placeholder="NIK" class="p-2 border rounded">
-      <input type="text" placeholder="Alamat" class="p-2 border rounded">
-      <input type="text" placeholder="Nomor HP" class="p-2 border rounded">
-      <button class="md:col-span-2 bg-blue-600 text-white px-4 py-2 rounded">Simpan Anggota</button>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+  <div class="bg-white p-8 rounded shadow-md w-full max-w-md">
+    <h1 class="text-2xl font-bold text-center mb-6">Login Koperasi</h1>
+    <form id="loginForm" class="space-y-4">
+      <input type="text" id="username" placeholder="Username" required class="w-full p-2 border rounded" />
+      <input type="password" id="password" placeholder="Password" required class="w-full p-2 border rounded" />
+      <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded w-full">Login</button>
     </form>
-  </section>
-
-  <!-- QR Code Kartu Anggota -->
-  <section class="p-6">
-    <h2 class="text-2xl font-semibold mb-4">QR Code Kartu Anggota</h2>
-    <div class="bg-white p-4 rounded shadow-md">
-      <input type="text" id="qrNama" placeholder="Nama Anggota" class="p-2 border rounded w-full mb-2">
-      <button onclick="generateQR()" class="bg-green-600 text-white px-4 py-2 rounded">Buat QR Code</button>
-      <canvas id="qrCanvas" class="mt-4 mx-auto"></canvas>
-    </div>
-  </section>
-
-  <!-- Filter Laporan -->
-  <section class="p-6">
-    <h2 class="text-2xl font-semibold mb-4">Filter Laporan</h2>
-    <div class="bg-white p-4 rounded shadow-md grid grid-cols-1 md:grid-cols-3 gap-4">
-      <input type="month" class="p-2 border rounded">
-      <select class="p-2 border rounded">
-        <option value="">Jenis Transaksi</option>
-        <option>Simpanan</option>
-        <option>Pinjaman</option>
-        <option>Unit Usaha</option>
-      </select>
-      <button class="bg-blue-600 text-white px-4 py-2 rounded">Tampilkan</button>
-    </div>
-  </section>
-
-  <!-- Backup & Restore -->
-  <section class="p-6">
-    <h2 class="text-2xl font-semibold mb-4">Backup & Restore Data</h2>
-    <div class="bg-white p-4 rounded shadow-md flex flex-col md:flex-row gap-4">
-      <button class="bg-green-600 text-white px-4 py-2 rounded">Backup Sekarang</button>
-      <input type="file" class="border p-2 rounded">
-      <button class="bg-blue-600 text-white px-4 py-2 rounded">Restore Data</button>
-    </div>
-  </section>
-
-  <!-- Keamanan -->
-  <footer class="p-6 text-center text-sm text-gray-500">
-    <p>🔐 Data terenkripsi. Otentikasi ganda dan log aktivitas tersedia untuk keamanan tambahan.</p>
-  </footer>
+    <p id="errorMsg" class="text-red-600 mt-4 text-sm text-center hidden">Login gagal. Cek kembali data Anda.</p>
+  </div>
 
   <script>
-    const ctx = document.getElementById('grafikKeuangan').getContext('2d');
-    new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei'],
-        datasets: [
-          {
-            label: 'Simpanan',
-            data: [20000000, 25000000, 30000000, 28000000, 35000000],
-            backgroundColor: 'rgba(255, 99, 132, 0.7)'
-          },
-          {
-            label: 'Pinjaman',
-            data: [15000000, 18000000, 16000000, 19000000, 21000000],
-            backgroundColor: 'rgba(54, 162, 235, 0.7)'
+    document.getElementById("loginForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      fetch(`https://script.google.com/macros/s/AKfycbyDsE0ur819YPUggjb_xy_xnvyzE-hXgGnI2lA4VnJiQuD8wOy5Wg-WmLxxpp8JriYm/exec?username=${username}&password=${password}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === "ok") {
+            const role = data.role.toLowerCase();
+            window.location.href = `${role}.html`; // akan buka admin.html / anggota.html / bendahara.html
+          } else {
+            document.getElementById("errorMsg").classList.remove("hidden");
           }
-        ]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { position: 'top' },
-          title: { display: true, text: 'Statistik Bulanan' }
-        }
-      }
+        })
+        .catch(() => {
+          document.getElementById("errorMsg").classList.remove("hidden");
+        });
     });
-
-    function cetakInvoice() {
-      const nama = document.getElementById('invoiceNama').value;
-      const jumlah = document.getElementById('invoiceJumlah').value;
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
-      doc.setFontSize(16);
-      doc.text('INVOICE KOPERASI', 70, 20);
-      doc.setFontSize(12);
-      doc.text(`Nama: ${nama}`, 20, 40);
-      doc.text(`Jumlah Transaksi: Rp ${jumlah}`, 20, 50);
-      doc.text(`Tanggal: ${new Date().toLocaleDateString()}`, 20, 60);
-      doc.save(`invoice-${nama}.pdf`);
-    }
-
-    function generateQR() {
-      const nama = document.getElementById('qrNama').value;
-      new QRious({
-        element: document.getElementById('qrCanvas'),
-        value: nama,
-        size: 200
-      });
-    }
   </script>
-
 </body>
 </html>
