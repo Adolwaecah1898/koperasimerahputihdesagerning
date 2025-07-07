@@ -28,7 +28,7 @@
         .then(data => {
           if (data.status === "ok") {
             const role = data.role.toLowerCase();
-            window.location.href = `${role}.html`; // akan buka admin.html / anggota.html / bendahara.html
+            window.location.href = `${role}.html`;
           } else {
             document.getElementById("errorMsg").classList.remove("hidden");
           }
