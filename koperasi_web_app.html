@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aplikasi Koperasi Desa Merah Putih Desa Gerning</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+  <!-- Navbar -->
+  <nav class="bg-red-600 text-white p-4 flex justify-between">
+    <div class="text-xl font-bold">Koperasi Merah Putih</div>
+    <div>
+      <a href="#" class="mx-2">Dashboard</a>
+      <a href="#" class="mx-2">Anggota</a>
+      <a href="#" class="mx-2">Simpanan</a>
+      <a href="#" class="mx-2">Pinjaman</a>
+      <a href="#" class="mx-2">Unit Usaha</a>
+      <a href="#" class="mx-2">Transaksi</a>
+      <a href="#" class="mx-2">Laporan</a>
+      <a href="#" class="mx-2">Login</a>
+    </div>
+  </nav>
+
+  <!-- Grafik Keuangan -->
+  <section class="p-6">
+    <h2 class="text-2xl font-semibold mb-4">Grafik Simpanan & Pinjaman</h2>
+    <div class="bg-white p-4 rounded shadow-md">
+      <canvas id="grafikKeuangan" class="w-full h-64"></canvas>
+    </div>
+  </section>
+
+  <script>
+    const ctx = document.getElementById('grafikKeuangan').getContext('2d');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei'],
+        datasets: [
+          {
+            label: 'Simpanan',
+            data: [20000000, 25000000, 30000000, 28000000, 35000000],
+            backgroundColor: 'rgba(255, 99, 132, 0.7)'
+          },
+          {
+            label: 'Pinjaman',
+            data: [15000000, 18000000, 16000000, 19000000, 21000000],
+            backgroundColor: 'rgba(54, 162, 235, 0.7)'
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'top'
+          },
+          title: {
+            display: true,
+            text: 'Statistik Bulanan'
+          }
+        }
+      }
+    });
+  </script>
+
+  <!-- Hak Akses dan Multi Role -->
+  <section class="p-6">
+    <h2 class="text-2xl font-semibold mb-4">Manajemen Hak Akses</h2>
+    <form class="bg-white p-4 rounded shadow-md">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <input type="text" placeholder="Nama Pengguna" class="p-2 border rounded">
+        <input type="text" placeholder="Username" class="p-2 border rounded">
+        <select class="p-2 border rounded">
+          <option>Role</option>
+          <option>Admin</option>
+          <option>Bendahara</option>
+          <option>Anggota</option>
+        </select>
+      </div>
+      <button class="mt-4 bg-red-600 text-white px-4 py-2 rounded">Tambahkan Akses</button>
+    </form>
+  </section>
+
+  <!-- Notifikasi dan Reminder -->
+  <section class="p-6">
+    <h2 class="text-2xl font-semibold mb-4">Notifikasi & Pengingat</h2>
+    <div class="bg-white p-4 rounded shadow-md">
+      <p>Kirim pengingat otomatis via:</p>
+      <ul class="list-disc pl-5">
+        <li>Email (pengingat tagihan, rapat, jatuh tempo)</li>
+        <li>WhatsApp (memerlukan integrasi API WA)</li>
+        <li>Push Notification (khusus versi mobile/web progressive)</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Backup & Restore -->
+  <section class="p-6">
+    <h2 class="text-2xl font-semibold mb-4">Backup & Restore Data</h2>
+    <div class="bg-white p-4 rounded shadow-md flex flex-col md:flex-row gap-4">
+      <button class="bg-green-600 text-white px-4 py-2 rounded">Backup Sekarang</button>
+      <input type="file" class="border p-2 rounded">
+      <button class="bg-blue-600 text-white px-4 py-2 rounded">Restore Data</button>
+    </div>
+  </section>
+
+  <!-- Keamanan Tambahan -->
+  <footer class="p-6 text-center text-sm text-gray-500">
+    <p>🔐 Data terenkripsi. Otentikasi ganda dan log aktivitas tersedia untuk keamanan tambahan.</p>
+  </footer>
+
+</body>
+</html>
